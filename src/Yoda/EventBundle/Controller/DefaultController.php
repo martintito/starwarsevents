@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
-    public function indexAction($count, $firstName)
+    public function indexAction($name, $count )
     {
         //return $this->render('YodaEventBundle:Default:index.html.twig', array('lastname' => $name));
         //return new Response('It\'s a traaaaaaap!');
@@ -40,19 +40,28 @@ class DefaultController extends Controller
         // these 2 lines are equivalent
         // $em = $this->container->get('doctrine')->getManager();
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('EventBundle:Event');
+        $repo = $em->getRepository('YodaEventBundle:Event');
 
         $event = $repo->findOneBy(array(
-            'name' => 'Darth\'s surprise birthday party',
+            'name' => 'Vader',
         ));
+        
+        //var_dump($event);
+        //exit;
 
         return $this->render(
-            'EventBundle:Default:index.html.twig',
+            'YodaEventBundle:Default:index.html.twig',
             array(
-                'name' => $firstName,
+                'name' => $name,
                 'count' => $count,
                 'event'=> $event,
             )
+        );
+    }
+    public function testAction()
+    {
+        return $this->render(
+            'YodaEventBundle:Default:test.html.twig'
         );
     }
 }
