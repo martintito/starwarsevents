@@ -1,45 +1,34 @@
-{% extends 'base.html.twig' %}
+{% extends 'YodaEventBundle::layout.html.twig' %}
 
 {% block body %}
-    <h1>Events list</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Time</th>
-                <th>Location</th>
-                <th>Details</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for event in events %}
-            <tr>
-                <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.id }}</a></td>
-                <td>{{ event.name }}</td>
-                <td>{#{ event.time }#}</td>
-                <td>{{ event.location }}</td>
-                <td>{{ event.details }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('event_show', { 'id': event.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
+    <section class="events">
+        <header id="menu">
+            <a class="button" href="{{ path('event_new') }}">Create new event</a>
+        </header>
+
+        {% for entity in events %}
+            <article>
+                <header class="map-container">
+                    <img src="http://maps.googleapis.com/maps/api/staticmap?center={{ entity.location | url_encode }}&markers=color:red%7Ccolor:red%7C{{ entity.location | url_encode }}&zoom=14&size=150x150&maptype=roadmap&sensor=false" />
+                </header>
+                <section>
+                    <h3>
+                        <a href="{{ path('event_show', {'id': entity.id}) }}">{{ entity.name }}</a>
+                    </h3>
+
+                    <dl>
+                        <dt>where:</dt>
+                        <dd>{{ entity.location }}</dd>
+
+                        <dt>when:</dt>
+                        <dd>{{ entity.time | date('g:ia / l M j, Y') }}</dd>
+
+                        <dt>who:</dt>
+                        <dd>Todo # of people</dd>
+                    </dl>
+                </section>
+            </article>
         {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('event_new') }}">Create a new event</a>
-        </li>
-    </ul>
+    </section>
 {% endblock %}
