@@ -2,9 +2,13 @@
 
 namespace Yoda\EventBundle\Controller;
 
-use Yoda\EventBundle\Entity\Event;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Yoda\EventBundle\Entity\Event;
+use Yoda\EventBundle\Form\EventType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * Event controller.
@@ -12,112 +16,210 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class EventController extends Controller
 {
+
     /**
-     * Lists all event entities.
-     *
+     * Lists all Event entities.
+     * @Template()
+     * @Route("/", name="event")
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $events = $em->getRepository('YodaEventBundle:Event')->findAll();
+        $entities = $em->getRepository('YodaEventBundle:Event')->findAll();
 
-        return $this->render('YodaEventBundle:Event:index.html.twig', array(
-            'events' => $events,
-        ));
+        return array(
+            'entities' => $entities,
+        );
     }
-
     /**
-     * Creates a new event entity.
+     * Creates a new Event entity.
      *
      */
-    public function newAction(Request $request)
+    public function createAction(Request $request)
     {
-        $event = new Event();
-        $form = $this->createForm('Yoda\EventBundle\Form\EventType', $event);
+        $entity = new Event();
+        $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($event);
+            $em->persist($entity);
             $em->flush();
 
-            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
         }
 
         return $this->render('YodaEventBundle:Event:new.html.twig', array(
-            'event' => $event,
-            'form' => $form->createView(),
+            'entity' => $entity,
+            'form'   => $form->createView(),
         ));
     }
 
     /**
-     * Finds and displays a event entity.
+    * Creates a form to create a Event entity.
+    *
+    * @param Event $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
+    private function createCreateForm(Event $entity)
+    {
+        $form = $this->createForm(new EventType(), $entity, array(
+            'action' => $this->generateUrl('event_create'),
+            'method' => 'POST',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Create'));
+
+        return $form;
+    }
+
+    /**
+     * Displays a form to create a new Event entity.
      *
      */
-    public function showAction(Event $event)
+    public function newAction()
     {
-        $deleteForm = $this->createDeleteForm($event);
+        $entity = new Event();
+        $form   = $this->createCreateForm($entity);
 
-        return $this->render('event/show.html.twig', array(
-            'event' => $event,
+        return $this->render('YodaEventBundle:Event:new.html.twig', array(
+            'entity' => $entity,
+            'form'   => $form->createView(),
+        ));
+    }
+
+    /**
+     * Finds and displays a Event entity.
+     *
+     */
+    public function showAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Event entity.');
+        }
+
+        $deleteForm = $this->createDeleteForm($id);
+
+        return $this->render('YodaEventBundle:Event:show.html.twig', array(
+            'entity'      => $entity,
+            'delete_form' => $deleteForm->createView(),        ));
+    }
+
+    /**
+     * Displays a form to edit an existing Event entity.
+     *
+     */
+    public function editAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Event entity.');
+        }
+
+        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($id);
+
+        return $this->render('YodaEventBundle:Event:edit.html.twig', array(
+            'entity'      => $entity,
+            'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-     * Displays a form to edit an existing event entity.
+    * Creates a form to edit a Event entity.
+    *
+    * @param Event $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
+    private function createEditForm(Event $entity)
+    {
+        $form = $this->createForm(new EventType(), $entity, array(
+            'action' => $this->generateUrl('event_update', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Update'));
+
+        return $form;
+    }
+    /**
+     * Edits an existing Event entity.
      *
      */
-    public function editAction(Request $request, Event $event)
+    public function updateAction(Request $request, $id)
     {
-        $deleteForm = $this->createDeleteForm($event);
-        $editForm = $this->createForm('Yoda\EventBundle\Form\EventType', $event);
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Event entity.');
+        }
+
+        $deleteForm = $this->createDeleteForm($id);
+        $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        if ($editForm->isValid()) {
+            $em->flush();
 
-            return $this->redirectToRoute('event_edit', array('id' => $event->getId()));
+            return $this->redirect($this->generateUrl('event_edit', array('id' => $id)));
         }
 
         return $this->render('YodaEventBundle:Event:edit.html.twig', array(
-            'event' => $event,
-            'edit_form' => $editForm->createView(),
+            'entity'      => $entity,
+            'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
-
     /**
-     * Deletes a event entity.
+     * Deletes a Event entity.
      *
      */
-    public function deleteAction(Request $request, Event $event)
+    public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($event);
+        $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->remove($event);
+            $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find Event entity.');
+            }
+
+            $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirectToRoute('event_index');
+        return $this->redirect($this->generateUrl('event'));
     }
 
     /**
-     * Creates a form to delete a event entity.
+     * Creates a form to delete a Event entity by id.
      *
-     * @param Event $event The event entity
+     * @param mixed $id The entity id
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(Event $event)
+    private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('event_delete', array('id' => $event->getId())))
+            ->setAction($this->generateUrl('event_delete', array('id' => $id)))
             ->setMethod('DELETE')
+            ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }

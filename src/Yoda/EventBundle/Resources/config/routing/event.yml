@@ -1,14 +1,15 @@
-event_index:
-    path:     /
-    defaults: { _controller: "YodaEventBundle:Event:index" }
-    methods:  GET
+# the / route is defined via annotations
+#event_index:
+#    path:     /
+#    defaults: { _controller: "YodaEventBundle:Event:index" }
+#    methods:  GET
 
 event_show:
     path:     /{id}/show
     defaults: { _controller: "YodaEventBundle:Event:show" }
     methods:  GET
 
-event_new:
+event_create:
     path:     /new
     defaults: { _controller: "YodaEventBundle:Event:new" }
     methods:  [GET, POST]
