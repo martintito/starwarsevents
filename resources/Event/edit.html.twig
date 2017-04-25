@@ -1,46 +1,49 @@
-{% extends 'YodaEventBundle::layout.html.twig' %}
+{% extends 'EventBundle::layout.html.twig' %}
 
 {% block body %}
     <section class="event-show event-edit">
         <header id="menu">
             <a class="link" href="{{ path('event') }}">&larr; back to the event list</a>
+            <a class="link" href="{{ path('event_show', {'id': entity.id}) }}">show event</a>
         </header>
 
         <article>
             <header class="map-container">
-                <img src="http://e.rpp-noticias.io/xlarge/2017/03/22/370245dsddsjpg.jpg" />
+
             </header>
             <section>
                 {# the opening <form> tag #}
-                {{ form_start(form) }}
-                    {{ form_errors(form) }}
+                {{ form_start(edit_form) }}
+                    {{ form_errors(edit_form) }}
                     <h1>
-                        {{ form_errors(form.name) }}
-                        {{ form_widget(form.name) }}
+                        {{ form_errors(edit_form.name) }}
+                        {{ form_widget(edit_form.name) }}
                     </h1>
 
                     <dl>
                         <dt>where:</dt>
                         <dd>
-                            {{ form_errors(form.location) }}
-                            {{ form_widget(form.location) }}
+                            {{ form_errors(edit_form.location) }}
+                            {{ form_widget(edit_form.location) }}
                         </dd>
 
                         <dt>when:</dt>
                         <dd>
-                            {{ form_errors(form.time) }}
-                            {{ form_widget(form.time) }}
+                            {{ form_errors(edit_form.time) }}
+                            {{ form_widget(edit_form.time) }}
                         </dd>
 
                         <dt>what:</dt>
                         <dd>
-                            {{ form_errors(form.details) }}
-                            {{ form_widget(form.details) }}
+                            {{ form_errors(edit_form.details) }}
+                            {{ form_widget(edit_form.details) }}
                         </dd>
                     </dl>
 
                 {# the closing </form> tag #}
-                {{ form_end(form) }}
+                {{ form_end(edit_form) }}
+
+                {{ form(delete_form) }}
             </section>
         </article>
     </section>

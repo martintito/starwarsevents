@@ -1,10 +1,10 @@
-{% extends 'YodaEventBundle::layout.html.twig' %}
+{% extends 'EventBundle::layout.html.twig' %}
 
 {% block body %}
 
     <section class="events">
         <header id="menu">
-            <a class="button" href="{{ path('event_create') }}">Create new event</a>
+            <a class="button" href="{{ path('event_new') }}">Create new event</a>
         </header>
 
         {% for entity in entities %}
