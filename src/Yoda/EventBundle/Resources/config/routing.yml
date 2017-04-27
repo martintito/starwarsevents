@@ -6,8 +6,8 @@ yoda_event_homepage_2:
     defaults: { _controller: YodaEventBundle:Default:test }
 foo_bar_event_import:
     resource: "@YodaEventBundle/Resources/config/routing/event.yml"
-    #prefix:   /event
+    prefix:   /event
 EventBundle_event_annotation:
     resource: "@YodaEventBundle/Controller"
-    prefix:   /
+    prefix:   /event
     type:     annotation
