@@ -31,4 +31,4 @@ security:
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/(css|js), roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/(_wdt|_profiler), roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/new, roles: ROLE_USER_TEST }
