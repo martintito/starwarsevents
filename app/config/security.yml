@@ -1,34 +1,59 @@
 security:
+#    encoders:
+#        Yoda\UserBundle\Entity\User: bcrypt
+#
+#    role_hierarchy:
+#        ROLE_ADMIN:       [ROLE_USER, ROLE_EVENT_CREATE, ROLE_ALLOWED_TO_SWITCH]
+#        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+#
+#    providers:
+#        our_database_users:
+#            entity: { class: UserBundle:User }
+
     encoders:
-        Yoda\UserBundle\Entity\User: bcrypt
+        FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_ADMIN:       [ROLE_USER, ROLE_EVENT_CREATE, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     providers:
-        our_database_users:
-            entity: { class: UserBundle:User }
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+#    firewalls:
+#        secured_area:
+#            pattern:    ^/
+#            form_login:
+#                check_path: login_check
+#                login_path: login_form
+#            logout:
+#                path:   logout
+#                target: event
+#            anonymous: ~
+#            switch_user: ~
+#            remember_me:
+#                key: "Order 1138"
+#            #http_basic:
+#            #    realm: "Secured Demo Area"
 
     firewalls:
-        secured_area:
-            pattern:    ^/
+        main:
+            pattern: ^/
             form_login:
-                check_path: login_check
-                login_path: login_form
-            logout:
-                path:   logout
-                target: event
-            anonymous: ~
-            switch_user: ~
-            remember_me:
-                key: "Order 1138"
-            #http_basic:
-            #    realm: "Secured Demo Area"
+                provider: fos_userbundle
+                csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+            logout:       true
+            anonymous:    true
 
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/(css|js), roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/(_wdt|_profiler), roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
+#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/(css|js), roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/(_wdt|_profiler), roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/, roles: ROLE_USER }
+        
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
