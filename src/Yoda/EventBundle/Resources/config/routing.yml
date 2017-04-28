@@ -7,7 +7,19 @@ yoda_event_homepage_2:
 foo_bar_event_import:
     resource: "@YodaEventBundle/Resources/config/routing/event.yml"
     prefix:   /event
-EventBundle_event_annotation:
+EionventBundle_event_annotation:
     resource: "@YodaEventBundle/Controller"
     prefix:   /event
     type:     annotation
+    
+event_register:
+    path:     /register
+    defaults: { _controller: "YodaEventBundle:Registration:register" }
+    
+
+event_login:
+    path:     /login
+    defaults: { _controller: "YodaEventBundle:Security:login" }
+    
+jobplix_user_security:
+    resource: "@YodaEventBundle/Resources/config/routing/security.xml"
