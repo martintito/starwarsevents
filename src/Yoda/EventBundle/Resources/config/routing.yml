@@ -4,10 +4,15 @@ yoda_event_homepage:
 yoda_event_homepage_2:
     path:     /test
     defaults: { _controller: YodaEventBundle:Default:test }
-foo_bar_event_import:
-    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
-    prefix:   /event
+yoda_event_save:
+    path:     /save
+    defaults: { _controller: YodaEventBundle:Default:save }
+
 EventBundle_event_annotation:
     resource: "@YodaEventBundle/Controller"
-    prefix:   /event
+    prefix:   /
     type:     annotation
+    
+EventBundle_event:
+    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
+    prefix:   /event
