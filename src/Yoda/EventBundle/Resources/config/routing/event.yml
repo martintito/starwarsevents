@@ -1,25 +1,28 @@
 # the / route is defined via annotations
-#event_index:
-#    path:     /
-#    defaults: { _controller: "YodaEventBundle:Event:index" }
-#    methods:  GET
 
 event_show:
-    path:     /{id}/show
+    pattern:  /{id}/show
     defaults: { _controller: "YodaEventBundle:Event:show" }
-    methods:  GET
+
+event_new:
+    pattern:  /new
+    defaults: { _controller: "YodaEventBundle:Event:new" }
 
 event_create:
-    path:     /new
-    defaults: { _controller: "YodaEventBundle:Event:new" }
-    methods:  [GET, POST]
+    pattern:  /create
+    defaults: { _controller: "YodaEventBundle:Event:create" }
+#    requirements: { _method: post }
 
 event_edit:
-    path:     /{id}/edit
+    pattern:  /{id}/edit
     defaults: { _controller: "YodaEventBundle:Event:edit" }
-    methods:  [GET, POST]
+
+event_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "YodaEventBundle:Event:update" }
+    requirements: { _method: post|put }
 
 event_delete:
-    path:     /{id}/delete
+    pattern:  /{id}/delete
     defaults: { _controller: "YodaEventBundle:Event:delete" }
-    methods:  DELETE
+    requirements: { _method: post|delete }
