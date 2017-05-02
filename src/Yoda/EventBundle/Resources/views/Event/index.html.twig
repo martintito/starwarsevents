@@ -5,6 +5,13 @@
     <section class="events">
         <header id="menu">
             <a class="button" href="{{ path('event_create') }}">Create new event</a>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <a class="link" href="{{ path('fos_user_security_logout') }}">
+                    Logout {{ app.user.username }}
+                </a>
+            {% else %}
+                <a class="link" href="{{ path('login_form') }}">Login</a>
+            {% endif %}
         </header>
 
         {% for entity in entities %}
