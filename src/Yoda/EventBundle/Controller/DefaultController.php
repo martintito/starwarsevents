@@ -4,6 +4,8 @@ namespace Yoda\EventBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class DefaultController extends Controller
 {
@@ -63,5 +65,26 @@ class DefaultController extends Controller
         return $this->render(
             'YodaEventBundle:Default:test.html.twig'
         );
+    }
+    
+    /**
+     * Pruebas con EntityRepository.
+     * @Template()
+     * @Route("/prueba", name="prueba")
+     */
+    public function pruebaAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $eventRepo = $em->getRepository('YodaEventBundle:Event');
+        //var_dump($eventRepo->findOneByName('master'));
+        $objEvent = $eventRepo->findOneByName('master');
+//        echo $objEvent->getName();
+//        echo $objEvent->getLocation();
+//        exit;
+
+        return array(
+            'event' => $objEvent,
+        );
+
     }
 }

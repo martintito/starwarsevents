@@ -39,8 +39,13 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
-        //$this->enforceUserSecurity('ROLE_EVENT_CREATE');
-
+        $this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        
+//        $securityContext = $this->get('security.context');
+//        if(!$securityContext->isGranted('ROLE_ADMIN')){
+//            throw $this->createAccessDeniedException('Need ROLE_ADMIN');
+//        }
+        
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -84,7 +89,9 @@ class EventController extends Controller
      */
     public function newAction()
     {
-        //$this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        $this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        
+        
 
         $entity = new Event();
         $form   = $this->createCreateForm($entity);
