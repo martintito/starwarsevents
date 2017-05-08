@@ -51,6 +51,9 @@ class EventController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $user = $this->getUser();
+            $entity->setOwner($user);
+            //var_dump($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -137,6 +140,7 @@ class EventController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Event entity.');
         }
+        $this->enforceOwnerSecurity($entity);
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
@@ -180,6 +184,7 @@ class EventController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Event entity.');
         }
+        $this->enforceOwnerSecurity($entity);
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
@@ -214,7 +219,7 @@ class EventController extends Controller
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Event entity.');
             }
-
+            $this->enforceOwnerSecurity($entity);
             $em->remove($entity);
             $em->flush();
         }
@@ -246,6 +251,19 @@ class EventController extends Controller
             // in Symfony 2.5
             // throw $this->createAccessDeniedException('message!');
             throw new AccessDeniedException('Need '.$role);
+        }
+    }
+    
+    private function enforceOwnerSecurity($event)
+    {
+        $user = $this->getUser();
+        var_dump($event);exit;
+
+        if ($user != $event->getOwner()) {
+            // if you're using 2.5 or higher
+            // throw $this->createAccessDeniedException('You are not the owner!!!');
+            throw new AccessDeniedException('You are not the owner!!!');
+            //$this->createAccessDeniedException('You are not the owner!!!');
         }
     }
 }

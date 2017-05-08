@@ -69,15 +69,16 @@ class DefaultController extends Controller
     
     /**
      * Pruebas con EntityRepository.
+     * 
      * @Template()
-     * @Route("/prueba", name="prueba")
+     * @Route("/prueba/{event_name}", name="prueba", requirements={"event_name" = "\w+"}, defaults={"event_name" = null})
      */
-    public function pruebaAction()
+    public function pruebaAction($event_name)
     {
         $em = $this->getDoctrine()->getManager();
         $eventRepo = $em->getRepository('YodaEventBundle:Event');
         //var_dump($eventRepo->findOneByName('master'));
-        $objEvent = $eventRepo->findOneByName('master');
+        $objEvent = $eventRepo->findOneByName($event_name);
 //        echo $objEvent->getName();
 //        echo $objEvent->getLocation();
 //        exit;
