@@ -4,6 +4,7 @@ namespace Yoda\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Yoda\EventBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Event
@@ -49,13 +50,15 @@ class Event
      * @ORM\Column(name="details", type="text")
      */
     private $details;
-    
-    /** 
-     *
-     * @ORM\ManyToOne(targetEntity="Yoda\EventBundle\Entity\User")
+       
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="Yoda\EventBundle\Entity\User",
+     *      inversedBy="events"
+     * )
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $owner;
+    protected $owner;
 
 
     /**

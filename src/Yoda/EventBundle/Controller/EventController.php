@@ -3,8 +3,6 @@
 namespace Yoda\EventBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-
-
 use Yoda\EventBundle\Entity\Event;
 use Yoda\EventBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -26,11 +24,12 @@ class EventController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
 
-        $entities = $em->getRepository('YodaEventBundle:Event')->findAll();
+        //$entities = $em->getRepository('YodaEventBundle:Event')->findAll();
 
         return array(
-            'entities' => $entities,
+            'entities' => $user->getEvents(),
         );
     }
     /**
