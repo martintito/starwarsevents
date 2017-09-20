@@ -6,6 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class EventControllerTest extends WebTestCase
 {
+    
+    public function testAdd()
+    {
+        //$calc = new Calculator();
+        //$result = $calc->add(30, 12);
+ 
+        // ¡acierta que nuestra calculadora suma dos números correctamente!
+        $this->assertEquals(42, 34); 
+    }
     /*
     public function testCompleteScenario()
     {

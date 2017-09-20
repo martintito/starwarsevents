@@ -3,8 +3,6 @@
 namespace Yoda\EventBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Yoda\EventBundle\Entity\Event;
 use Yoda\EventBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -26,11 +24,12 @@ class EventController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
 
-        $entities = $em->getRepository('YodaEventBundle:Event')->findAll();
+        //$entities = $em->getRepository('YodaEventBundle:Event')->findAll();
 
         return array(
-            'entities' => $entities,
+            'entities' => $user->getEvents(),
         );
     }
     /**
@@ -39,13 +38,21 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
-        //$this->enforceUserSecurity('ROLE_EVENT_CREATE');
-
+        $this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        
+//        $securityContext = $this->get('security.context');
+//        if(!$securityContext->isGranted('ROLE_ADMIN')){
+//            throw $this->createAccessDeniedException('Need ROLE_ADMIN');
+//        }
+        
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $user = $this->getUser();
+            $entity->setOwner($user);
+            //var_dump($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -84,7 +91,9 @@ class EventController extends Controller
      */
     public function newAction()
     {
-        //$this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        $this->enforceUserSecurity('ROLE_EVENT_CREATE');
+        
+        
 
         $entity = new Event();
         $form   = $this->createCreateForm($entity);
@@ -130,6 +139,7 @@ class EventController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Event entity.');
         }
+        $this->enforceOwnerSecurity($entity);
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
@@ -173,6 +183,7 @@ class EventController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Event entity.');
         }
+        $this->enforceOwnerSecurity($entity);
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
@@ -207,7 +218,7 @@ class EventController extends Controller
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Event entity.');
             }
-
+            $this->enforceOwnerSecurity($entity);
             $em->remove($entity);
             $em->flush();
         }
@@ -234,11 +245,25 @@ class EventController extends Controller
 
     private function enforceUserSecurity($role = 'ROLE_USER')
     {
-        $securityContext = $this->container->get('security.context');
-        if (!$securityContext->isGranted($role)) {
+        //$securityContext = $this->container->get('security.context');
+        //if (!$securityContext->isGranted($role)) {
+        if (!$this->getSecurityContext()->isGranted($role)) {
             // in Symfony 2.5
             // throw $this->createAccessDeniedException('message!');
             throw new AccessDeniedException('Need '.$role);
         }
     }
+    
+//    private function enforceOwnerSecurity($event)
+//    {
+//        $user = $this->getUser();
+//        var_dump($event);exit;
+//
+//        if ($user != $event->getOwner()) {
+//            // if you're using 2.5 or higher
+//            // throw $this->createAccessDeniedException('You are not the owner!!!');
+//            throw new AccessDeniedException('You are not the owner!!!');
+//            //$this->createAccessDeniedException('You are not the owner!!!');
+//        }
+//    }
 }

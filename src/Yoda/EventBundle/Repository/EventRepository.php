@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class EventRepository extends EntityRepository
 {
+    /*
+     * @param $username
+     * @return User|null
+     */
+    public function findOneByName($name) {
+        return $this->createQueryBuilder('e')
+                ->andWhere('e.name = :name')
+                ->setParameter('name', $name)
+                ->getQuery()
+                ->getOneOrNullResult();
+                
+    }
 }
