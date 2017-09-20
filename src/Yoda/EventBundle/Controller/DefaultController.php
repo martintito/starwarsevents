@@ -60,8 +60,10 @@ class DefaultController extends Controller {
     }
 
     public function testAction() {
+
 //        echo "come up here little bird!";
 //        exit;
+
         return $this->render(
                         'YodaEventBundle:Default:test.html.twig'
         );
